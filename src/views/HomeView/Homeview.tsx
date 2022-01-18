@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   FlatList,
@@ -57,6 +57,36 @@ const HomeView = () => {
     }
   };
 
+  const fetchPokemon = () => {
+    const url = 'https://pokeapi.co/api/v2/pokemon?limit=151';
+    fetch(url)
+      .then(response => response.json())
+      .then(json => {
+        console.log(json.results);
+        const newArray = json.results.map((pokemon: any, index: number) => {
+          let indexPokedex = index + 1;
+          pokemon.id = indexPokedex;
+          pokemon.level = 15;
+          pokemon.isMale = true;
+          pokemon.src =
+            'https://pokeres.bastionbot.org/images/pokemon/' +
+            indexPokedex +
+            '.png';
+
+          return pokemon;
+        });
+        console.log(newArray);
+        setListPoke(newArray);
+      })
+      .catch(error => {
+        console.log('Error: ', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchPokemon();
+  }, []);
+
   return (
     <View style={styles.main_container}>
       <View style={styles.title_container}>
@@ -102,7 +132,7 @@ const PokemonInfo = ({name, level, isMale, src, onClickPokemon}: Pokemon) => {
     <>
       <Text style={styles.text_appeared}>A new Pokemon appeared !</Text>
       <TouchableOpacity onPress={() => onClickPokemon()}>
-        <Image source={src} style={styles.imagePokemon} />
+        <Image source={{uri: src}} style={styles.imagePokemon} />
       </TouchableOpacity>
       <Text>
         His name is {name}, his level is {level}
@@ -112,6 +142,7 @@ const PokemonInfo = ({name, level, isMale, src, onClickPokemon}: Pokemon) => {
   );
 };
 
+//== STYLES == //
 const styles = StyleSheet.create({
   main_container: {
     flex: 1,
@@ -138,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     color: 'rgb(200, 0, 0)',
-    marginTop: 30, 
+    marginTop: 30,
   },
 
   imagePokemon: {
