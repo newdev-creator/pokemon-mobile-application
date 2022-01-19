@@ -67,6 +67,7 @@ const HomeView = () => {
       .then(json => {
         console.log(json.results);
         const newArray = json.results.map((pokemon: any, index: number) => {
+          //TODO: level between 40 & 60
           let indexPokedex = index + 1;
           let pokeName = pokemon.name;
           pokemon.id = indexPokedex;
