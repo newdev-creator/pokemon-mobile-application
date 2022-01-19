@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {
+  ActivityIndicator,
   Button,
   FlatList,
   Image,
@@ -27,7 +29,8 @@ import * as commonStyle from '../../utils/commonStyle';
 
 const HomeView = () => {
   const [counterPokedex, setCounterPokedex] = useState(0);
-  const [listPoke, setListPoke] = useState(listPokeOriginal);
+  const [listPoke, setListPoke] = useState<Pokemon[]>(undefined);
+  const [isDataReceived, setDataReceived] = useState(false);
 
   const getNamePokemon = (namePokemon: string) => {
     console.log('My name is ', namePokemon);
@@ -65,18 +68,20 @@ const HomeView = () => {
         console.log(json.results);
         const newArray = json.results.map((pokemon: any, index: number) => {
           let indexPokedex = index + 1;
+          let pokeName = pokemon.name;
           pokemon.id = indexPokedex;
           pokemon.level = 15;
           pokemon.isMale = true;
           pokemon.src =
-            'https://pokeres.bastionbot.org/images/pokemon/' +
-            indexPokedex +
-            '.png';
+            'https://img.pokemondb.net/artwork/' +
+            pokeName +
+            '.jpg';
 
           return pokemon;
         });
         console.log(newArray);
         setListPoke(newArray);
+        setDataReceived(true);
       })
       .catch(error => {
         console.log('Error: ', error);
@@ -94,14 +99,18 @@ const HomeView = () => {
       </View>
 
       <View style={styles.pokemon_container}>
-        <PokemonInfo
-          id={listPoke[counterPokedex].id}
-          name={listPoke[counterPokedex].name}
-          level={listPoke[counterPokedex].level}
-          isMale={listPoke[counterPokedex].isMale}
-          src={listPoke[counterPokedex].src}
-          onClickPokemon={modifyLevel}
-        />
+        {isDataReceived ? (
+          <PokemonInfo
+            id={listPoke[counterPokedex].id}
+            name={listPoke[counterPokedex].name}
+            level={listPoke[counterPokedex].level}
+            isMale={listPoke[counterPokedex].isMale}
+            src={listPoke[counterPokedex].src}
+            onClickPokemon={modifyLevel}
+          />
+        ) : (
+          <ActivityIndicator size="large" />
+        )}
       </View>
 
       <View style={styles.button_container}>
