@@ -26,11 +26,18 @@ import {listPokeOriginal} from '../../data/PokemonList';
 
 import {Pokemon} from '../../models/Pokemon';
 import * as commonStyle from '../../utils/commonStyle';
+import { getRandomInt, shuffle } from '../../utils/utils';
 
-const HomeView = () => {
+const HomeView = (props: any) => {
   const [counterPokedex, setCounterPokedex] = useState(0);
   const [listPoke, setListPoke] = useState<Pokemon[]>(undefined);
   const [isDataReceived, setDataReceived] = useState(false);
+
+  console.log('Props: ', props);
+
+  const onViewPokemonDetails = (idPokemon: number, namePokemon: string, srcPokemon: string) => {
+    props.navigation.navigate('Details', {id: idPokemon, name: namePokemon, src: srcPokemon});
+  };
 
   const getNamePokemon = (namePokemon: string) => {
     console.log('My name is ', namePokemon);
@@ -71,8 +78,8 @@ const HomeView = () => {
           let indexPokedex = index + 1;
           let pokeName = pokemon.name;
           pokemon.id = indexPokedex;
-          pokemon.level = 15;
-          pokemon.isMale = true;
+          pokemon.level = getRandomInt(1, 80);
+          pokemon.isMale = getRandomInt(0, 1) === 0 ? true : false;
           pokemon.src =
             'https://img.pokemondb.net/artwork/' +
             pokeName +
@@ -80,8 +87,7 @@ const HomeView = () => {
 
           return pokemon;
         });
-        console.log(newArray);
-        setListPoke(newArray);
+        setListPoke(shuffle(newArray));
         setDataReceived(true);
       })
       .catch(error => {
@@ -107,7 +113,7 @@ const HomeView = () => {
             level={listPoke[counterPokedex].level}
             isMale={listPoke[counterPokedex].isMale}
             src={listPoke[counterPokedex].src}
-            onClickPokemon={modifyLevel}
+            onClickPokemon={onViewPokemonDetails}
           />
         ) : (
           <ActivityIndicator size="large" />
@@ -137,11 +143,11 @@ const HomeView = () => {
   );
 };
 
-const PokemonInfo = ({name, level, isMale, src, onClickPokemon}: Pokemon) => {
+const PokemonInfo = ({id, name, level, isMale, src, onClickPokemon}: Pokemon) => {
   return (
     <>
       <Text style={styles.text_appeared}>A new Pokemon appeared !</Text>
-      <TouchableOpacity onPress={() => onClickPokemon()}>
+      <TouchableOpacity onPress={() => onClickPokemon(id, name, src)}>
         <Image source={{uri: src}} style={styles.imagePokemon} />
       </TouchableOpacity>
       <Text>

@@ -27,42 +27,33 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 //== Views ==//
 import HomeView from './views/HomeView/Homeview';
 import TestView from './views/TestView/TestView';
+import PokemonDetailsView from './views/PokemonDetailsView/PokemonDetailsView';
 
-const Section: React.FC<{
-  title: string;
-}> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <>
-    <HomeView />
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={HomeView}
+            options={{title: '', headerShown: false}}
+          />
+          <Stack.Screen
+            name="Details"
+            component={PokemonDetailsView}
+            options={{title: 'Characteristics of the Pokemon'}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 };
