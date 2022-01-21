@@ -32,8 +32,15 @@ const HomeView = (props: any) => {
   const [counterPokedex, setCounterPokedex] = useState(0);
   const [listPoke, setListPoke] = useState<Pokemon[]>(undefined);
   const [isDataReceived, setDataReceived] = useState(false);
+  const [arrayPokemonCaptured, setArrayPokemonCaptured] = useState<Pokemon[]>([]);
 
-  console.log('Props: ', props);
+
+  const onCapturePokeball = () => {
+    const currentPokemon = listPoke[counterPokedex];
+    setArrayPokemonCaptured(prevArray => [...prevArray, currentPokemon]);
+    console.log('Pokemon Captured: ', arrayPokemonCaptured);
+  };
+
 
   const onViewPokemonDetails = (idPokemon: number, namePokemon: string, srcPokemon: string) => {
     props.navigation.navigate('Details', {id: idPokemon, name: namePokemon, src: srcPokemon});
@@ -126,6 +133,15 @@ const HomeView = (props: any) => {
           onPress={() => onPrevious()}>
           <Image
             source={require('../../assets/icons/left-arrow.png')}
+            style={styles.iconButton}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonNextPrevious}
+          onPress={() => onCapturePokeball()}>
+          <Image
+            source={require('../../assets/icons/pokeball.png')}
             style={styles.iconButton}
           />
         </TouchableOpacity>

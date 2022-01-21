@@ -72,6 +72,11 @@ const App = () => {
           component={MyPokemonView}
           options={{title: 'This is my Pokemon Team'}}
         />
+        <MyPokemonStack.Screen
+          name="Details"
+          component={PokemonDetailsView}
+          options={{title: 'Characteristics of the Pokemon'}}
+        />
       </MyPokemonStack.Navigator>
     );
   }
